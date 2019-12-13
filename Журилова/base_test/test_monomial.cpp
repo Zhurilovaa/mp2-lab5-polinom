@@ -1,5 +1,6 @@
-#include "Monomial.h"
 #include <gtest.h>
+#include "Monomial.h"
+#include "Monomial.cpp"
 
 //Создание монома
 TEST(Monomial, can_create_monom_without_parameters)

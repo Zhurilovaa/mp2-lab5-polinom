@@ -1,6 +1,8 @@
-#include "Polynomial.h"
 #include <gtest.h>
 #include <string>
+#include "Monomial.cpp"
+#include "Polynomial.h"
+#include "Polynomial.cpp"
 
 // Создание полинома
 TEST(Polynomial, can_create_polinom)
@@ -63,7 +65,7 @@ TEST(Polynomial, operator_assignment_is_correct1)
 	Polynomial pol1("X^2Y^7+XY^5+Z");
 	Polynomial pol2("");
 	pol2 = pol1;
-	EXPECT_EQ(pol2== pol1,true);
+	EXPECT_EQ(pol2 == pol1,true);
 }
 TEST(Polynomial, function_milt_const_is_correct)
 {
@@ -71,4 +73,7 @@ TEST(Polynomial, function_milt_const_is_correct)
 	pol.MultConst(5);
 	EXPECT_EQ(pol.GetPolinom(), "5X^2Y^7+5XY^5+5Z");
 }
+
+
+
 

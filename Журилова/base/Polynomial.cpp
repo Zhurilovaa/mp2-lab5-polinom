@@ -1,124 +1,9 @@
-#include "Polynomial.h"
 #include <math.h>
 #include <sstream>
+#include "Polynomial.h"
 using namespace std;
 
-void Polynomial::ConvertStringToPolynomial(string pol)
-{
-	Pol.DeleteAllList();//очистили список
-	Monomial tempMon(0,-1,-1,-1);//временный моном
-	Pol.InsertConnect(tempMon);//Связующее звено - невозможный моном
-	string temp;
-	double coeff=0;
-	int coeffSign = 1;
-	int X=0;
-	int Y=0;
-	int Z=0;
-	int size = pol.size();
-	for (int i = 0; i < size;)
-	{
-		while (pol[i] == ' ')
-		{
-			i++;//если пробел пропускаем;
-		}
-		if ((i < size) && (isOperation(pol[i]) == true))//Если операция + или -
-		{
-			if (pol[i] == '-')
-			{
-				coeffSign = -1;
-			}
-			else if (pol[i] == '+')
-			{
-				coeffSign = 1;
-			}
-		}
-		while ((i < size) && (isNumber(pol[i]) == true))//цифра
-		{
-			temp = temp + pol[i];
-			i++;
-		}
-		while ((i < size) && (isVariable(pol[i]) == true))//какая-то переменная
-		{
-			switch (pol[i])
-			{
-			case 'X':
-			{
-				if (pol[i + 1] == '^')
-				{
-					i = i + 2;
-					while ((i < size) && (isVariable(pol[i]) == false) && (isOperation(pol[i]) == false))
-					{
-						X = X * 10 + (pol[i] - '0');
-						i++;
-					}
-				}
-				else
-				{
-					X = 1;
-					i++;
-				}
-				continue;
-			}
-			case 'Y':
-			{
-				if (pol[i + 1] == '^')
-				{
-					i = i + 2;
-					while ((i < size) && (isVariable(pol[i]) == false) && (isOperation(pol[i]) == false))
-					{
-						Y = Y * 10 + (pol[i] - '0');
-						i++;
-					}
-				}
-				else
-				{
-					Y = 1;
-					i++;
-				}
-				continue;
-			}
-			case 'Z':
-			{
-				if (pol[i + 1] == '^')
-				{
-					i = i + 2;
-					while ((i < size) && (isVariable(pol[i]) == false) && (isOperation(pol[i]) == false))
-					{
-						Z = Z * 10 + (pol[i] - '0');
-						i++;
-					}
-				}
-				else
-				{
-					Z = 1;
-					i++;
-				}
-				continue;
-			}
-			}
-		}
-		if (temp == "")
-		{
-			coeff = 1 * coeffSign;
-		}
-		else
-		{
-			coeff = coeffSign * stoi(temp);
-		}
-		tempMon.SetData(coeff, X, Y, Z);//Создали моном
-		if (Pol.Empty()==true)//полином еще пуст
-			Pol.InsertFirst(tempMon);
-		else
-		{
-			Pol.InsertLast(tempMon);
-		}
-		tempMon.CleanMon();//очистили временный моном, после его записи в полином
-	}
-	if (Pol.Empty() == false)
-	{
-		SortPolynom();//сортируем полином
-	}
-}
+
 bool Polynomial::isVariable(char c)//Символ переменная
 {
 	if ((c == 'X') || (c == 'Y') || (c == 'Z'))
@@ -143,51 +28,7 @@ bool Polynomial::isNumber(char c)
 	}
 	else return false;
 }
-void  Polynomial::SortPolynom() 
-{
-	Polynomial pPol("");//пустой полином
-	Monomial p;
-	double pCoeff;
-	while (Pol.ListEnd() == false)
-	{
-		p = Pol.GetDataCur();
-		if (pPol.Pol.Empty() == true)//Временный полином пока пуст
-		{
-			pPol.Pol.InsertFirst(p);
-			Pol.DeleteFirst();
-		}
-		else
-			if (pPol.Pol.Empty() == false)
-			{
-				pPol.Pol.Reset();//Текущий элемент - первый
-				Monomial tempMon = pPol.Pol.GetDataCur();
-				Monomial prov(1, 0, 0, 0);
-				while ((tempMon > p) && (pPol.Pol.LastElem() == false) && (tempMon > prov))
-				{
-					pPol.Pol.StepNext();
-					tempMon = pPol.Pol.GetDataCur();
-				}
-				if (tempMon.SimilarPol(p)==true)//Если полиномы подобные
-				{
-					pCoeff = tempMon.GetCoeff() + p.GetCoeff();
-					p.SetCoeff(pCoeff);
-					pPol.Pol.SetCurrentData(p);
-					Pol.DeleteFirst();
-				}
-				else if (pPol.Pol.ListEnd() == true)//Дошли до фиктивного, втсавка только в конец
-				{
-					pPol.Pol.InsertLast(p);
-					Pol.DeleteFirst();
-				}
-				else if (pPol.Pol.ListEnd() == false)//Не подобные и не послений. Вставка в текущее место
-				{
-					pPol.Pol.InsertСurrent(p);
-					Pol.DeleteFirst();
-				}
-			}
-	}
-	*this = pPol;
-}
+
 double Polynomial::CalcInPoint(double _X, double _Y, double _Z)//Вычисление в точке
 {
 	double X, Y, Z, X1, Y1, Z1;

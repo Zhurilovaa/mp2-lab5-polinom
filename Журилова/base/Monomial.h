@@ -1,6 +1,5 @@
 #ifndef __MONOMIAL_H__
 #define __MONOMIAL_H__
-#include "TList.h"
 
 using namespace std;
 //Класс моном
@@ -61,5 +60,45 @@ public:
 	bool operator<=(const Monomial& _m);//Меньше или равно
 	bool SimilarPol(const Monomial& _m);//Подобные мономы
 };
+//Операции
+//не равно
+bool Monomial::operator!=(const Monomial& m)
+{
+	if ((coeff != m.coeff) || (degreeX != m.degreeX) || (degreeY != m.degreeY) || (degreeZ != m.degreeZ))
+	{
+		return true;
+	}
+	else return false;
+}
+//равно
+bool Monomial::operator==(const Monomial& m)
+{
+	if (*this != m)
+		return false;
+	else return true;
+}
+//умножение мономов
+Monomial Monomial::operator*(Monomial& m)
+{
+	Monomial res(coeff, degreeX, degreeY, degreeZ);
+	res.coeff = res.coeff * m.coeff;
+	res.degreeX = res.degreeX + m.degreeX;
+	res.degreeY = res.degreeY + m.degreeY;
+	res.degreeZ = res.degreeZ + m.degreeZ;
+	return res;
+}
+//оператор присваивания
+
+Monomial& Monomial::operator=(const Monomial& m)
+{
+	if (*this != m)
+	{
+		coeff = m.coeff;
+		degreeX = m.degreeX;
+		degreeY = m.degreeY;
+		degreeZ = m.degreeZ;
+	}
+	return *this;
+}
 #endif
 

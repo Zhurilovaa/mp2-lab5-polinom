@@ -1,5 +1,5 @@
-#include "TList.h"
 #include <gtest.h>
+#include "TList.h"
 //Создание списка
 TEST(TList, can_create_list_without_parameters)
 {

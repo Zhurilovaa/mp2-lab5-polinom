@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include"TList.h"
+#include "TList.h"
 #include "Monomial.h"
 #include "Polynomial.h"
 
