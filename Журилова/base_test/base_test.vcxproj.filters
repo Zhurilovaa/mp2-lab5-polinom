@@ -21,10 +21,10 @@
     <ClCompile Include="test_monomial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_polynomial.cpp">
+    <ClCompile Include="test_sample_polynomial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_sample_polynomial.cpp">
+    <ClCompile Include="test_polynomial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

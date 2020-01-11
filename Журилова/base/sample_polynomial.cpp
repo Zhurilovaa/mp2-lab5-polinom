@@ -1,8 +1,7 @@
 #include <iostream>
 #include <string>
-#include "TList.h"
-#include "Monomial.h"
 #include "Polynomial.h"
+
 
 using namespace std;
 
@@ -25,7 +24,7 @@ void GetMenu()
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-
+	setlocale(LC_ALL, "Russian");
 	cout << "Добро подаловать!" << endl;
 	cout << "Данная программа предназначена для работы с полиномами, включающими в себя 3 переменные X,Y,Z." << endl;
 	cout << "Правила ввода полинома:" << endl;
@@ -41,6 +40,7 @@ int main()
 	Polynomial p1(""), p2(""), p3(""), p4("");//p3 - результат от операций + - *, MultConst
 	int choice = -1;
 	int choise1 = 0;
+	bool prov1, prov2;
 	while(choice!=10)
 		cin >> choice;
 		switch (choice)
@@ -50,11 +50,35 @@ int main()
 			break;
 		case 1:
 			cout << "Введите полином 1: ";
-			cin >> pol1;
+			prov1 = false;
+			while (prov1 == false)
+			{
+				cin >> pol1;
+				if (isPolynomRight(pol1) == true)
+				{
+					prov1 = true;
+				}
+				if (prov1 == false)
+				{
+					cout << "Неверно введен полином! Попробуйте еще раз." << endl;
+				}
+			}
 			break;
 		case 2:
 			cout << "Введите полином 2: ";
-			cin >> pol2;
+			prov2 = false;
+			while (prov2 == false)
+			{
+				cin >> pol2;
+				if (isPolynomRight(pol1) == true)
+				{
+					prov2 = true;
+				}
+				if (prov2 == false)
+				{
+					cout << "Неверно введен полином! Попробуйте еще раз." << endl;
+				}
+			}
 			break;
 		case 3:
 			cout << pol1 << endl;
@@ -91,7 +115,7 @@ int main()
 		case 6:
 			cout << "Сложение полиномов: " << endl;
 			p3 = p1 + p2;
-			cout << p3.GetPolinom() << endl;
+			//cout << p3.GetPolinom() << endl;
 			break;			
 		case 7:
 			cout << " Вычитание полиномов: " << endl;
@@ -102,11 +126,11 @@ int main()
 			{
 			case 1:
 				p3 = p1 - p2;
-				cout << p3.GetPolinom() << endl;
+				//cout << p3.GetPolinom() << endl;
 				break;
 			case 2:
 				p3 = p2 - p1;
-				cout << p3.GetPolinom() << endl;
+				//cout << p3.GetPolinom() << endl;
 				break;
 			default:
 				break;
@@ -116,7 +140,7 @@ int main()
 			break;
 		case 8:
 			p3 = p1 * p2;
-			cout << p3.GetPolinom();
+			//cout << p3.GetPolinom();
 		case 9:
 			cout << "Умножение полинома на константу: " << endl;
 			cout << "1.Первый" << endl;
@@ -129,18 +153,18 @@ int main()
 			case 1:
 				p3 = p1.MultConst(A);
 				cout << "Результат" << endl;
-				cout << p3.GetPolinom() << endl;
+				//cout << p3.GetPolinom() << endl;
 				break;
 			case 2:
 				p3 = p2.MultConst(A);
 				cout << "Результат" << endl;
-				cout << p3.GetPolinom() << endl;
+				//cout << p3.GetPolinom() << endl;
 				break;
 			default:
 				break;
 			}
 			break;				
-		}	
-
+		}
+		
 	return 0;
 }

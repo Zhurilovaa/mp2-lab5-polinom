@@ -18,6 +18,7 @@
   <ItemGroup>
     <ClCompile Include="Monomial.cpp" />
     <ClCompile Include="Polynomial.cpp" />
+    <ClCompile Include="Proba.cpp" />
     <ClCompile Include="sample_polynomial.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

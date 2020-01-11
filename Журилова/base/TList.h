@@ -1,34 +1,36 @@
-#ifndef __TLIST_H__
-#define __TLIST_H__
+#ifndef __TList_H__
+#define __TList_H__
+#include <iostream>
 #include "Monomial.h"
 using namespace std;
-
+template <class T>
+struct TNode
+{
+	T data;//данные звена
+	TNode *pNext;//указатель на следующее звено
+	TNode *pPast;//указатель на предыдущее звено
+	TNode() : pNext(nullptr), pPast(nullptr) {};
+};
 template <class T>
 class TList
 {
 private:
-	//Структура звено списока
-	struct TNode
-	{
-		T data;//данные звена
-		TNode *pNext;//указатель на следующее звено
-		TNode *pPast;//указатель на предыдущее звено
-	};
-	TNode *pFirst;//Первое звено
-	TNode *pLast;//Последнее звено
-	TNode *pCurrent;//Текущее звено
-	TNode *pConnect;//Связующее звено (фиктивное начало и конец)
+	//Структура звено списока	
+	TNode<T> *pFirst;//Первое звено
+	TNode<T> *pLast;//Последнее звено
+	TNode<T> *pCurrent;//Текущее звено
+	TNode<T> *pConnect;//Связующее звено (фиктивное начало и конец)
 public:
 	TList()
 	{
 		//список пуст при создании
 		pFirst = pCurrent = pLast = pConnect = nullptr;
 	}
-	TList(const TList<T> &list)//Конструктор копирования
+	TList(const TList<T>& list)//Конструктор копирования
 	{
 		pFirst = pCurrent = pLast = nullptr;//Для начала сделали список, в который копируем, пустым
 
-		TNode *temp = list.pConnect;
+		TNode<T> *temp = list.pConnect;
 		InsertConnect(temp->data);
 		if (list.pFirst != nullptr)
 		{
@@ -53,7 +55,7 @@ public:
 		{
 			return true;
 		}
-		else 
+		else
 		{
 			return false;
 		}
@@ -76,7 +78,7 @@ public:
 		else
 			return false;
 	}
-	
+
 
 	//Проход по списку
 	void StepNext()//Шаг вперед по списку
@@ -92,13 +94,13 @@ public:
 	void InsertConnect(T _data)//Фиктивная вставка
 	{
 		//Создаем новое фиктивное звено, делаем его текущим для работы
-		pConnect = new TNode;
+		pConnect = new TNode<T>;
 		pConnect->data = _data;
 		pCurrent = pConnect;
 	}
 	void InsertFirst(T _data)//Вставка в начало
 	{
-		TNode* p = new TNode;
+		TNode<T> *p = new TNode<T>;
 		p->data = _data;
 		if (Empty() == true)
 		{
@@ -119,7 +121,7 @@ public:
 	}
 	void InsertLast(T _data)//Вставка в конец
 	{
-		TNode* p = new TNode;
+		TNode<T> *p = new TNode<T>;
 		p->data = _data;
 		if (Empty() == true)
 		{
@@ -134,10 +136,9 @@ public:
 			pLast = p;
 		}
 	}
-
 	void InsertСurrent(T _data)//Вставка перед текущим
 	{
-		TNode* p = new TNode;
+		TNode<T> *p = new TNode<T>;
 		p->data = _data;
 		if ((pCurrent == pFirst) || (pFirst = nullptr))
 		{
@@ -179,17 +180,16 @@ public:
 		}
 		else if (Empty() == false)
 		{
-			TNode* p = pFirst->pNext;
+			TNode<T> *p = pFirst->pNext;
 			delete pFirst;
 			pFirst = pCurrent = p;
 			pCurrent->pPast = pConnect;
 			pConnect->pNext = pCurrent;
 		}
 	}
-
 	void DeleteCurrent()//Удаление текущего
 	{
-		TNode* p = pCurrent;
+		TNode<T> *p = pCurrent;
 		if (p == pFirst)
 			DeleteFirst();
 		else if (p == pLast)
@@ -205,7 +205,7 @@ public:
 	}
 	void DeleteLast()//Удаление последнего
 	{
-		TNode* p = pLast;
+		TNode<T> *p = pLast;
 		pCurrent = pLast;
 		StepBack();
 		pCurrent->pNext = pConnect;
@@ -216,14 +216,15 @@ public:
 	}
 	void DeleteAllList()
 	{
+		
 		while ((pFirst != pConnect) && (pFirst != nullptr))
 		{
-			TNode* temp = pFirst;
+			TNode<T> *temp = pFirst;
 			pFirst = pFirst->pNext;
 			delete temp;
 		}
 		pFirst = pLast = pCurrent = nullptr;
+		
 	}
 };
-
 #endif

@@ -1,10 +1,103 @@
-#include <math.h>
+п»ї#include <math.h>
 #include <sstream>
 #include "Polynomial.h"
+
 using namespace std;
 
+void Polynomial::ConvertStringToPolynomial(string pol)
+{
+	Pol.DeleteAllList();
+	Monomial tempMon(0, -1, -1, -1);//РІСЂРµРјРµРЅРЅС‹Р№ РјРѕРЅРѕРј
+	Pol.InsertConnect(tempMon);//РЎРІСЏР·СѓСЋС‰РµРµ Р·РІРµРЅРѕ - РЅРµРІРѕР·РјРѕР¶РЅС‹Р№ РјРѕРЅРѕРј
+	string coeff;
+	string degree;
+	bool workMon = true;
+	double coeffMon = 0;
+	int coeffSign = 1;
+	int X = 0;
+	int Y = 0;
+	int Z = 0;
+	int size = pol.size();
+	for (int i = 0; i < size;)
+	{
+		if (i == 0)
+		{
+			workMon = true;
+		}
+		if (pol[i] == '+' || pol[i] == '-')//РЅР°С‡РёРЅР°РµС‚СЃСЏ РјРѕРЅРѕРј
+		{
+			workMon = true;
+			if (pol[i] == '-')
+			{
+				coeffSign = coeffSign * (-1);
+			}
+			i++;
+		}
+		else if (workMon == true)
+		{
+			while ((pol[i] >= '0') && (pol[i] <= '9'))
+			{
+				coeff = pol[i];
+				i++;
+			}
+			if (coeff == "")
+			{
+				coeffMon = coeffSign;
+			}
+			else
+			{
+				coeffMon = coeffSign * stoi(coeff);
+				coeff = "";
+			}
+			switch (pol[i])
+			{
+			case 'X':
+				i++; i++;
+				while ((pol[i] >= '0') && (pol[i] <= '9'))
+				{
+					degree = degree + pol[i];
+					i++;
+				}
+				X = stoi(degree);
+				degree = "";
+			case 'Y':
+				i++; i++;
+				while ((pol[i] >= '0') && (pol[i] <= '9'))
+				{
+					degree = degree + pol[i];
+					i++;
+				}
+				Y = stoi(degree);
+				degree = "";
+			case 'Z':
+				i++; i++;
+				while ((pol[i] >= '0') && (pol[i] <= '9'))
+				{
+					degree = degree + pol[i];
+					i++;
+				}
+				Z = stoi(degree);
+				degree = "";
+			default:
+				break;
+			}
 
-bool Polynomial::isVariable(char c)//Символ переменная
+			if (pol[i - 3] == 'Z')
+			{
+				workMon = false;
+				tempMon.SetData(coeffMon, X, Y, Z);
+				coeffSign = 1;
+				Pol.InsertFirst(tempMon);
+				X = 0; Y = 0; Z = 0;
+			}
+		}
+	}
+	if (Pol.Empty() == false)
+	{
+		//Proba();//СЃРѕСЂС‚РёСЂСѓРµРј РїРѕР»РёРЅРѕРј
+	}
+}
+bool Polynomial::isVariable(char c)//РЎРёРјРІРѕР» РїРµСЂРµРјРµРЅРЅР°СЏ
 {
 	if ((c == 'X') || (c == 'Y') || (c == 'Z'))
 	{
@@ -12,7 +105,7 @@ bool Polynomial::isVariable(char c)//Символ переменная
 	}
 	else return false;
 }
-bool Polynomial::isOperation(char c) 
+bool Polynomial::isOperation(char c)
 {
 	if ((c == '+') || (c == '-'))
 	{
@@ -20,7 +113,7 @@ bool Polynomial::isOperation(char c)
 	}
 	else return false;
 }
-bool Polynomial::isNumber(char c) 
+bool Polynomial::isNumber(char c)
 {
 	if ((c >= '0') && (c <= '9'))
 	{
@@ -29,22 +122,22 @@ bool Polynomial::isNumber(char c)
 	else return false;
 }
 
-double Polynomial::CalcInPoint(double _X, double _Y, double _Z)//Вычисление в точке
+double Polynomial::CalcInPoint(double _X, double _Y, double _Z)//Р’С‹С‡РёСЃР»РµРЅРёРµ РІ С‚РѕС‡РєРµ
 {
 	double X, Y, Z, X1, Y1, Z1;
-	X = _X;//Значение x
-	Y = _Y;//Значение y
-	Z = _Z;//Значение z
+	X = _X;//Р—РЅР°С‡РµРЅРёРµ x
+	Y = _Y;//Р—РЅР°С‡РµРЅРёРµ y
+	Z = _Z;//Р—РЅР°С‡РµРЅРёРµ z
 	double result, Coeff;
 	result = 0.0;
 	Monomial temp;
-	for (Pol.Reset(); Pol.ListEnd()==false; Pol.StepNext())
+	for (Pol.Reset(); Pol.ListEnd() == false; Pol.StepNext())
 	{
 		temp = Pol.GetDataCur();
 		Coeff = temp.GetCoeff();
-		X1 = temp.GetDegreeeX();
-		Y1 = temp.GetDegreeeY();
-		Z1 = temp.GetDegreeeZ();
+		X1 = temp.GetDegreeX();
+		Y1 = temp.GetDegreeY();
+		Z1 = temp.GetDegreeZ();
 		result = result + Coeff * pow(X, X1) * pow(Y, Y1) * pow(Z, Z1);
 	}
 	return result;
@@ -83,7 +176,7 @@ Polynomial Polynomial::operator+(Polynomial &pol)
 			Pol.StepNext();
 		}
 	}
-	while (pol.Pol.ListEnd()==false)//Остались ли во втором полиноме мономы?
+	while (pol.Pol.ListEnd()==false)//РћСЃС‚Р°Р»РёСЃСЊ Р»Рё РІРѕ РІС‚РѕСЂРѕРј РїРѕР»РёРЅРѕРјРµ РјРѕРЅРѕРјС‹?
 	{
 		result.Pol.InsertLast(temp2);
 		pol.Pol.StepNext();
@@ -93,16 +186,25 @@ Polynomial Polynomial::operator+(Polynomial &pol)
 }
 Polynomial  Polynomial::MultConst(double A)
 {
-	Polynomial temp = *this;
+	cout << "ya zdes" << endl;
+	Polynomial temp("");
+	temp = *this;
+	cout << "vse ok" << endl;
 	double tempCoeff;
-	Monomial tempMon;
-	while (temp.Pol.ListEnd() == false)
+	Monomial tempMon;	
+	for (temp.Pol.Reset();temp.Pol.ListEnd() == false;temp.Pol.StepNext())
 	{
 		tempMon = temp.Pol.GetDataCur();
+		cout << endl;
+		tempMon.PrintMon();
 		tempCoeff = A * tempMon.GetCoeff();
 		tempMon.SetCoeff(tempCoeff);
+		cout << endl;
+		tempMon.PrintMon();
+		cout << endl;
 		temp.Pol.SetCurrentData(tempMon);
 	}
+	temp.PrintPol();
 	return temp;
 }
 Polynomial Polynomial::operator*(Polynomial &pol)
@@ -111,10 +213,10 @@ Polynomial Polynomial::operator*(Polynomial &pol)
 	Pol.Reset();
 	pol.Pol.Reset();
 	Monomial temp1, temp2, temp3;
-	while (Pol.ListEnd()==false)
+	while (Pol.ListEnd() == false)
 	{
 		temp1 = Pol.GetDataCur();
-		while (pol.Pol.ListEnd()==false)
+		while (pol.Pol.ListEnd() == false)
 		{
 			temp2 = pol.Pol.GetDataCur();
 			temp3 = temp1 * temp2;
@@ -124,7 +226,6 @@ Polynomial Polynomial::operator*(Polynomial &pol)
 		pol.Pol.Reset();
 		Pol.StepNext();
 	}
-	result.SortPolynom();
 	return result;
 }
 Polynomial Polynomial::operator-(Polynomial &pol)
@@ -212,109 +313,6 @@ bool Polynomial::operator==(const Polynomial &pol)
 		return false;
 	else return true;
 }
-string Polynomial::To_String(double s)
-{
-	std::ostringstream oss;
-	oss << s;
-	return oss.str();
-}
-string Polynomial::GetPolinom() 
-{
-	string result = "";
-	double coeff;
-	int X, Y, Z;
-	Monomial temp;
-	if (Pol.Empty() == true)
-	{
-		result = "0";
-	}
-	else
-	{
-		for (Pol.Reset(); Pol.ListEnd()==false; Pol.StepNext())
-		{
-			temp = Pol.GetDataCur();
-			coeff = temp.GetCoeff();
-			X = temp.GetDegreeeX();
-			Y = temp.GetDegreeeY();
-			Z = temp.GetDegreeeZ();
-			if (coeff > 0)
-			{
-				result = result + "+";
-			}
-			string monom = "";
-			if ((X == 0) && (Y != 0) && (Z != 0))
-			{
-				monom = To_String(coeff);
-				monom += 'Y';
-				monom += '^';
-				monom += To_String(Y);
-				monom += 'Z';
-				monom += '^';
-				monom += To_String(Z);
-			}
-			else if ((X != 0) && (Y == 0) && (Z != 0))
-			{
-				monom = To_String(coeff);
-				monom += 'X';
-				monom += '^';
-				monom += To_String(X);
-				monom += 'Z';
-				monom += '^';
-				monom += To_String(Z);
-			}
-			else if ((X != 0) && (Y != 0) && (Z == 0))
-			{
-				monom = To_String(coeff);
-				monom += 'X';
-				monom += '^';
-				monom += To_String(X);
-				monom += 'Y';
-				monom += '^';
-				monom += To_String(Y);
-			}
-			else if ((X == 0) && (Y == 0) && (Z != 0))
-			{
-				monom = To_String(coeff);
-				monom += 'Z';
-				monom += '^';
-				monom += To_String(Z);
-			}
-			else if ((X != 0) && (Y == 0) && (Z == 0))
-			{
-				monom = To_String(coeff);
-				monom += 'X';
-				monom += '^';
-				monom += To_String(X);
-			}
-			else if ((X == 0) && (Y != 0) && (Z == 0))
-			{
-				monom = To_String(coeff);
-				monom += 'Y';
-				monom += '^';
-				monom += To_String(Y);
-			}
-			else if ((X == 0) && (Y == 0) && (Z == 0))
-			{
-				monom = To_String(coeff);
-			}
-			else if ((Z != 0) && (Y != 0) && (Z != 0))
-			{
-				monom = To_String(coeff);
-				monom += 'X';
-				monom += '^';
-				monom += To_String(X);
-				monom += 'Y';
-				monom += '^';
-				monom += To_String(Y);
-				monom += 'Z';
-				monom += '^';
-				monom += To_String(Z);
-			}
-			result += monom;
-		}
-	}
-	return result;
-}
 bool isPolynomRight(string pol)
 {
 	int size = pol.size();
@@ -365,7 +363,7 @@ bool isPolynomRight(string pol)
 					else
 					{
 						i++;
-						if ((pol[i] < '0') || (pol[i] > '9'))//Недопустимый символ
+						if ((pol[i] < '0') || (pol[i] > '9'))//РќРµРґРѕРїСѓСЃС‚РёРјС‹Р№ СЃРёРјРІРѕР»
 							return false;
 						else
 						{
@@ -392,11 +390,11 @@ bool isPolynomRight(string pol)
 			}
 			if ((pol[i] == '-') || (pol[i] == '+'))
 			{
-				if (workMon > 0)//Не закончили работу с предыдущим мономом
+				if (workMon > 0)//РќРµ Р·Р°РєРѕРЅС‡РёР»Рё СЂР°Р±РѕС‚Сѓ СЃ РїСЂРµРґС‹РґСѓС‰РёРј РјРѕРЅРѕРјРѕРј
 				{
 					return false;
 				}
-				else//Закончили, идем дальше
+				else//Р—Р°РєРѕРЅС‡РёР»Рё, РёРґРµРј РґР°Р»СЊС€Рµ
 				{
 					countVarMon[0] = countVarMon[1] = countVarMon[2] = 0;
 					workMon++;
@@ -425,4 +423,112 @@ bool isPolynomRight(string pol)
 		}
 		return true;
 	}
+}
+void Polynomial::PrintPol()
+{
+	Monomial temp;
+	if (Pol.Empty() == true)
+	{
+		cout << '0';
+	}
+	else
+	{
+		Pol.Reset();
+		temp = Pol.GetDataCur();
+		temp = Pol.GetDataCur();
+		temp.PrintMon();
+		Pol.StepNext();
+		while(Pol.ListEnd() == false)
+		{
+			temp = Pol.GetDataCur();
+			if (temp.GetCoeff() > 0)
+			{
+				cout << '+';
+				temp.PrintMon();
+			}
+			else if (temp.GetCoeff() < 0)
+			{
+				temp.PrintMon();
+			}
+			Pol.StepNext();
+		}
+	}
+}
+string Polynomial::GetPolinom()
+{
+	string k = "";
+
+	double  coef;
+	int power, x, y, z;
+	Monomial p;
+	if (Pol.Empty()==true)
+		cout << 0 << endl;
+	else
+	{
+		for (Pol.Reset(); Pol.ListEnd()==false; Pol.StepNext())
+		{
+			p = Pol.GetDataCur();
+			coef = p.GetCoeff();
+
+			if (coef > 0) k += "+";
+			string s = "";
+			x = p.GetDegreeX();
+			y = p.GetDegreeY();
+			z = p.GetDegreeZ();
+
+			if ((x == 0) && (y != 0) && (z != 0))
+			{
+				s = ToString(coef);
+				s += 'Y'; s += '^'; s += ToString(y);
+				s += 'Z'; s += '^'; s += ToString(z);
+			}
+			else if ((x != 0) && (y == 0) && (z != 0))
+			{
+				s = ToString(coef);
+				s += 'X'; s += '^'; s += ToString(x);
+				s += 'Z'; s += '^'; s += ToString(z);
+			}
+			else if ((x != 0) && (y != 0) && (z == 0))
+			{
+				s = ToString(coef);
+				s += 'X'; s += '^';
+				s += ToString(x);
+				s += 'Y'; s += '^'; s += ToString(y);
+			}
+			else if ((x == 0) && (y == 0) && (z != 0))
+			{
+				s = ToString(coef);
+				s += 'Z'; s += '^'; s += ToString(z);
+			}
+			else if ((x != 0) && (y == 0) && (z == 0))
+			{
+				s = ToString(coef);
+				s += 'X'; s += '^';
+				s += ToString(x);
+			}
+			else if ((x == 0) && (y != 0) && (z == 0))
+			{
+				s = ToString(coef);
+				s += 'Y'; s += '^'; s += ToString(y);
+			}
+			else if ((x == 0) && (y == 0) && (z == 0))
+				s = ToString(coef);
+			else if ((x != 0) && (y != 0) && (z != 0))
+			{
+				s = ToString(coef);
+				s += 'X'; s += '^'; s += ToString(x);
+				s += 'Y'; s += '^'; s += ToString(y);
+				s += 'Z'; s += '^'; s += ToString(z);
+			}
+			k += s;
+		}
+	}
+	return k;
+}
+
+string Polynomial::ToString(double k)
+{
+	std::ostringstream oss;
+	oss << k;
+	return oss.str();
 }
